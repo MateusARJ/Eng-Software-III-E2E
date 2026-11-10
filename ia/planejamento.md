@@ -189,7 +189,8 @@ Seguindo as conclusões do artigo **GenIA-E2ETest**, um script gerado por IA a p
 
 3. **Ajuste na abertura dos seletores `SelectField` na tela de conversão:**
    - **Problema na resposta da IA:** A IA tentou abrir o modal de criptomoeda clicando no rótulo estático `"Cryptocurrency"` e o de moeda fiduciária clicando em `"Fiat Currency"`.
-   - **Correção realizada:** Em `SelectField.tsx`, o rótulo (`<Text style={selectFieldStyles.label}>{label}</Text>`) fica fora do `<Pressable>`. O botão clicável exibe o `displayLabel` do valor atualmente selecionado (`"Bitcoin"` por padrão para criptomoeda e `"USD"` por padrão para moeda fiduciária). Corrigimos os comandos para tocar em `"Bitcoin"` (abrindo o modal e escolhendo `"Ethereum"`) e tocar em `"USD"` (abrindo o modal e escolhendo `"BRL"`).
+   - **Correção realizada:** Em `SelectField.tsx`, o rótulo (`<Text style={selectFieldStyles.label}>{label}</Text>`) fica fora do `<Pressable>`. O botão clicável exibe o `displayLabel` do valor selecionado, que `useSelectField.ts` monta como `` `${title} (${subtitle})` ``: `"Bitcoin (BTC)"` para a criptomoeda e `"USD ($)"` para a moeda fiat. Dentro do modal, cada opção mostra só o `title` (`"Ethereum"`, `"BRL"`). O fluxo toca em `"Bitcoin \\(BTC\\)"`, escolhe `"Ethereum"` e confirma `"Ethereum \\(ETH\\)"`; depois toca em `"USD \\(\\$\\)"`, escolhe `"BRL"` e confirma `"BRL \\(R\\$\\)"`.
+   - **Observação:** a primeira versão desta correção, feita só lendo o código, usava `tapOn: "Bitcoin"` e `tapOn: "USD"`. Ela falhou no emulador (`Element not found: Bitcoin`) porque o texto do campo é `"Bitcoin (BTC)"`. Ler o código não bastou; foi preciso executar no aparelho.
 
 4. **Substituição de valores monetários fixos na conversão por Expressões Regulares:**
    - **Problema na resposta da IA:** A IA verificou `assertVisible: "R$19,713.28"` (calculado sobre o preço estático de fallback do Ethereum de `$3,850.25`).
@@ -202,6 +203,14 @@ Seguindo as conclusões do artigo **GenIA-E2ETest**, um script gerado por IA a p
 6. **Fechamento explícito do teclado virtual (`hideKeyboard`):**
    - **Problema na resposta da IA:** Nos rascunhos de criação de alerta, a IA digitava o preço com `inputText` e tentava tocar imediatamente em `"Below target price"` e `"Save Alert"`.
    - **Correção realizada:** No emulador Android (`Pixel_7`), o teclado numérico (`keyboardType="decimal-pad"`) aberto pelo `TextInput` sobrepõe a parte inferior do `ScrollView`. Adicionamos `- hideKeyboard` logo após cada `inputText` para garantir que os rádios de condição e o botão `"Save Alert"` estejam sempre visíveis e clicáveis.
+
+7. **Ajustes encontrados só na execução no emulador (validação manual com `maestro test` e `maestro hierarchy`):**
+   - **Espera pela lista, não pelo título.** O rascunho fazia `assertVisible: "Bitcoin"` logo depois de ver `"Cryptocurrencies"`. O título é renderizado já no estado `loading` (`CryptoListScreen.tsx`), e a lista só aparece quando a CoinGecko responde. Resultado: `Assertion is false: "Bitcoin" is visible`. Os fluxos passaram a usar `extendedWaitUntil: visible: "Bitcoin"` (20 s).
+   - **Toque nas abas inferiores.** `tapOn: "Convert"`, sugerido pela IA e mantido na primeira revisão, falhou com `Element not found`. Com `maestro hierarchy`, vimos que o texto da aba tem altura zero na árvore de acessibilidade (bounds `[483,2316][596,2316]`) e que o elemento clicável tem `accessibilityText` `"?, Convert"`: o `?` é o glifo do ícone. O seletor final é `".*, Convert"` (o mesmo vale para `List` e `Alerts`), que também não colide com o título `"Convert Crypto"`.
+   - **Asserção ambígua `"Create Alert"`.** No fluxo 04, depois de tocar em `"New Alert"`, verificar `"Create Alert"` não prova que o formulário abriu, porque o botão do `EmptyState` tem o mesmo texto. A asserção passou a ser `"Select cryptocurrency"`, que só existe no formulário. Também incluímos, nos fluxos 03 e 04, a verificação de que o campo mostra `"Bitcoin (BTC)"`/`"Solana (SOL)"` depois da escolha no modal.
+   - **Escape de `$` nos valores.** O Maestro trata o seletor como regex. `"$75,000.00"` só passava pelo fallback de comparação literal; agora usamos `"\\$75,000\\.00"` e `"\\$120\\.00"`.
+   - **Dependência de rede.** Em erro da API, a aba List mostra `"Failed to load"` e **não** os dados locais de `cryptoData.ts` (o fallback de dados existe no hook, mas a tela só renderiza a `FlatList` no estado `idle`). Por isso, todos os fluxos dependem de internet; isso está registrado no README.
+   - **Limitação que o E2E não pega.** O `useEffect` de conversão em `useConversionScreen.ts` não lista `cryptos` nas dependências, então o valor convertido não é recalculado quando os preços da API chegam depois da digitação. Como a asserção do fluxo 02 é por formato (`\$[0-9,.]+`), esse defeito passa despercebido. Ficou registrado aqui, sem correção, porque o código pertence ao projeto base.
 
 ### 4.3. O que foi descartado (e por quê)
 
