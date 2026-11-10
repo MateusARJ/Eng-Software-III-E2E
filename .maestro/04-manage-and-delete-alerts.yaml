@@ -1,0 +1,43 @@
+appId: com.anonymous.cryptoalert
+name: "04 - Navegação de Retorno, Criação (Below) e Exclusão de Alerta"
+---
+- launchApp:
+    clearState: true
+
+# 1. Aguarda carregamento inicial e acessa a aba Alerts
+- extendedWaitUntil:
+    visible: "Bitcoin"
+    timeout: 20000
+- tapOn: ".*, Alerts"   # botão da aba: accessibilityLabel "<ícone>, Alerts"
+- assertVisible: "Price Alerts"
+- assertVisible: "No alerts yet"
+
+# 2. Testa o botão New Alert e a ação de voltar (Go back) sem salvar
+- tapOn: "New Alert"
+- assertVisible: "Select cryptocurrency"   # só existe no formulário ("Create Alert" também é o botão do EmptyState)
+- tapOn: "Go back"
+- assertVisible: "Price Alerts"
+- assertVisible: "No alerts yet"
+
+# 3. Cria um alerta de queda (Below target price) para Solana ($120.00)
+- tapOn: "Create Alert"
+- tapOn: "Select cryptocurrency"
+- tapOn: "Solana"
+- assertVisible: "Solana \\(SOL\\)"
+- tapOn: "0.00"
+- inputText: "120"
+- hideKeyboard
+- tapOn: "Below target price"
+- tapOn: "Save Alert"
+
+# 4. Valida o card do alerta criado na lista
+- assertVisible: "Price Alerts"
+- assertVisible: "Solana"
+- assertVisible: ".*below.*"
+- assertVisible: "\\$120\\.00"
+
+# 5. Exclui o alerta pelo botão de lixeira (Delete alert) e valida retorno ao EmptyState
+- tapOn: "Delete alert"
+- assertNotVisible: "Solana"
+- assertVisible: "No alerts yet"
+- assertVisible: "Create Alert"
