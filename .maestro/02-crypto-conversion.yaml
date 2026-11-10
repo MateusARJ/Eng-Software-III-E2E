@@ -1,0 +1,34 @@
+appId: com.anonymous.cryptoalert
+name: "02 - Conversão Reativa entre Criptomoedas e Moedas Fiduciárias"
+---
+- launchApp:
+    clearState: true
+
+# 1. Aguarda carregamento inicial e navega para a aba Convert
+- extendedWaitUntil:
+    visible: "Bitcoin"
+    timeout: 20000
+- tapOn: ".*, Convert"   # botão da aba: accessibilityLabel "<ícone>, Convert"
+- assertVisible: "Convert Crypto"
+- assertVisible: "Enter an amount"
+
+# 2. Insere quantidade e valida conversão reativa imediata em USD (Bitcoin -> USD)
+- tapOn: "0.00"
+- inputText: "2"
+- hideKeyboard
+- assertNotVisible: "Enter an amount"
+- assertVisible: "\\$[0-9,.]+"
+
+# 3. Altera a criptomoeda no SelectField (Bitcoin -> Ethereum)
+#    O campo fechado exibe "Nome (SÍMBOLO)"; dentro do modal a opção mostra só o nome.
+- tapOn: "Bitcoin \\(BTC\\)"
+- tapOn: "Ethereum"
+- assertVisible: "Ethereum \\(ETH\\)"
+- assertNotVisible: "Bitcoin \\(BTC\\)"
+- assertVisible: "\\$[0-9,.]+"
+
+# 4. Altera a moeda fiduciária no SelectField (USD -> BRL) e valida símbolo R$
+- tapOn: "USD \\(\\$\\)"
+- tapOn: "BRL"
+- assertVisible: "BRL \\(R\\$\\)"
+- assertVisible: "R\\$[0-9,.]+"
