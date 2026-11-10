@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="Pixel_7" tests="4" failures="0" time="108.108" timestamp="2026-11-10T15:03:35">
+    <testcase id="01 - Listagem de Criptomoedas e Navegação entre Abas" name="01 - Listagem de Criptomoedas e Navegação entre Abas" classname="01 - Listagem de Criptomoedas e Navegação entre Abas" file=".maestro\01-list-and-navigation.yaml" time="20.694" timestamp="2026-11-10T15:03:35" status="SUCCESS"/>
+    <testcase id="02 - Conversão Reativa entre Criptomoedas e Moedas Fiduciárias" name="02 - Conversão Reativa entre Criptomoedas e Moedas Fiduciárias" classname="02 - Conversão Reativa entre Criptomoedas e Moedas Fiduciárias" file=".maestro\02-crypto-conversion.yaml" time="24.197" timestamp="2026-11-10T15:03:56" status="SUCCESS"/>
+    <testcase id="03 - Criação de Alerta de Preço e Validação do Badge na Listagem" name="03 - Criação de Alerta de Preço e Validação do Badge na Listagem" classname="03 - Criação de Alerta de Preço e Validação do Badge na Listagem" file=".maestro\03-create-alert-and-badge.yaml" time="29.782" timestamp="2026-11-10T15:04:20" status="SUCCESS"/>
+    <testcase id="04 - Navegação de Retorno, Criação (Below) e Exclusão de Alerta" name="04 - Navegação de Retorno, Criação (Below) e Exclusão de Alerta" classname="04 - Navegação de Retorno, Criação (Below) e Exclusão de Alerta" file=".maestro\04-manage-and-delete-alerts.yaml" time="33.371" timestamp="2026-11-10T15:04:50" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

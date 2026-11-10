@@ -1,0 +1,8 @@
+$ maestro test .maestro/
+Running on Pixel_7 (emulador Android, app com.anonymous.cryptoalert em build release)
+
+[Passed] 01 - Listagem de Criptomoedas e Navegação entre Abas (17s)
+[Passed] 02 - Conversão Reativa entre Criptomoedas e Moedas Fiduciárias (24s)
+[Passed] 03 - Criação de Alerta de Preço e Validação do Badge na Listagem (30s)
+[Passed] 04 - Navegação de Retorno, Criação (Below) e Exclusão de Alerta (34s)
+4/4 Flows Passed in 1m 45s
