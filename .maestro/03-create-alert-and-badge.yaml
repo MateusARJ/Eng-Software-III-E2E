@@ -1,0 +1,45 @@
+appId: com.anonymous.cryptoalert
+name: "03 - Criação de Alerta de Preço e Validação do Badge na Listagem"
+---
+- launchApp:
+    clearState: true
+
+# 1. Aguarda carregamento inicial e navega até a aba Alerts
+- extendedWaitUntil:
+    visible: "Bitcoin"
+    timeout: 20000
+- tapOn: ".*, Alerts"   # botão da aba: accessibilityLabel "<ícone>, Alerts"
+- assertVisible: "Price Alerts"
+- assertVisible: "No alerts yet"
+
+# 2. Abre o formulário de criação de alerta
+- tapOn: "Create Alert"
+- assertVisible: "Select cryptocurrency"
+- assertVisible: "Above target price"
+
+# 3. Seleciona Bitcoin no modal de criptomoedas
+- tapOn: "Select cryptocurrency"
+- tapOn: "Bitcoin"
+- assertVisible: "Bitcoin \\(BTC\\)"
+
+# 4. Preenche o preço-alvo, seleciona condição Above e salva
+- tapOn: "0.00"
+- inputText: "75000"
+- hideKeyboard
+- tapOn: "Above target price"
+- tapOn: "Save Alert"
+
+# 5. Verifica que o alerta foi criado e listado em Price Alerts
+- assertVisible: "Price Alerts"
+- assertNotVisible: "No alerts yet"
+- assertVisible: "Bitcoin"
+- assertVisible: ".*above.*"
+- assertVisible: "\\$75,000\\.00"
+
+# 6. Retorna para a aba List e valida o badge expansível no card do Bitcoin
+- tapOn: ".*, List"   # botão da aba: accessibilityLabel "<ícone>, List"
+- assertVisible: "Cryptocurrencies"
+- assertVisible: "1 alert"
+- tapOn: "1 alert"
+- assertVisible: "Above target"
+- assertVisible: "\\$75,000\\.00"
