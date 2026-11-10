@@ -1,0 +1,35 @@
+appId: com.anonymous.cryptoalert
+name: "01 - Listagem de Criptomoedas e Navegação entre Abas"
+---
+- launchApp:
+    clearState: true
+
+# 1. Valida o carregamento da tela inicial (aba List) e os ativos principais
+- extendedWaitUntil:
+    visible: "Bitcoin"
+    timeout: 20000
+- assertVisible: "Cryptocurrencies"
+- assertVisible: "BTC"
+- assertVisible: "Ethereum"
+- assertVisible: "ETH"
+
+# 2. Navega para a aba Convert e valida a estrutura da tela de conversão
+- tapOn: ".*, Convert"   # botão da aba: accessibilityLabel "<ícone>, Convert"
+- assertVisible: "Convert Crypto"
+- assertVisible: "Amount"
+- assertVisible: "Cryptocurrency"
+- assertVisible: "Fiat Currency"
+- assertVisible: "Converted Amount"
+- assertVisible: "Enter an amount"
+
+# 3. Navega para a aba Alerts e valida o estado vazio inicial
+- tapOn: ".*, Alerts"   # botão da aba: accessibilityLabel "<ícone>, Alerts"
+- assertVisible: "Price Alerts"
+- assertVisible: "New Alert"
+- assertVisible: "No alerts yet"
+- assertVisible: "Create Alert"
+
+# 4. Retorna para a aba List e confirma a persistência da listagem
+- tapOn: ".*, List"   # botão da aba: accessibilityLabel "<ícone>, List"
+- assertVisible: "Cryptocurrencies"
+- assertVisible: "Bitcoin"
